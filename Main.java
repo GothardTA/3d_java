@@ -51,13 +51,18 @@ public class Main extends JFrame {
     }
  
     void drawLines(Graphics g) {
-        Graphics2D g2d = (Graphics2D) g;
+        // Graphics2D g2d = (Graphics2D) g;
  
         for (int[] edge : cubeEdges) {
+			double[] vertex1 = cubeVertexes[edge[0]];
+			double[] vertex2 = cubeVertexes[edge[2]];
+
+			// vertex1 = MatrixMath.multiply(vertex1, )
+
 			double[] first = perspectiveStuff(cubeVertexes[edge[0]]);
 			double[] second = perspectiveStuff(cubeVertexes[edge[1]]);
 
-			g.setColor(Color.RED);
+			g.setColor(Color.BLACK);
 			g.drawLine((int) first[0], (int) first[1], (int) second[0], (int) second[1]);
 		}
  
