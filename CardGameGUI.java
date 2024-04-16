@@ -25,6 +25,41 @@ public class CardGameGUI extends JFrame implements ActionListener {
 	/** Width of the game frame. */
 	private static int DEFAULT_WIDTH = 800;
 
+	private static int cameraPos[] = {0, 0, 0};
+	private static double fov = 60.0;
+	private static double n = 1.0 / Math.tan((fov * 3.1415 / 180.0) / 180.0);
+	
+	private static double scale = 50.0;
+
+	private static double[][] cubeVertexes = {
+		{-1, -1, -1},
+		{-1, -1, 1},
+		{-1, 1, 1},
+		{-1, 1, -1},
+		{1, -1, -1},
+		{1, -1, 1},
+		{1, 1, 1},
+		{1, 1, -1}
+	};
+
+	private static int[][] cubeEdges = {
+		// front face
+		{1, 2},
+		{2, 3},
+		{3, 4},
+		{4, 1},
+		// back face
+		{5, 6},
+		{6, 7},
+		{7, 8},
+		{8, 5},
+		// connect the faces
+		{1, 4},
+		{2, 5},
+		{3, 6},
+		{4, 8}
+	};
+
 	/** The main panel containing the game components. */
 	private JPanel panel;
 
@@ -50,7 +85,14 @@ public class CardGameGUI extends JFrame implements ActionListener {
 	 * Draw the display (cards and messages).
 	 */
 	public void repaint() {
-		// do stuff here
+		for (int[] edge : cubeEdges) {
+			double[] first = perspectiveStuff(cubeVertexes[edge[0] - 1]);
+			double[] second = perspectiveStuff(cubeVertexes[edge[1] - 1]);
+
+			panel.getGraphics().setColor(Color.RED);
+			panel.getGraphics().drawLine((int) first[0], (int) first[1], (int) second[0], (int) second[1]);
+		}
+
 		pack();
 		panel.repaint();
 	}
@@ -79,18 +121,36 @@ public class CardGameGUI extends JFrame implements ActionListener {
 		panel.setVisible(true);
 	}
 
-	public void actionPerformed(ActionEvent e) {
-		// if (e.getSource().equals(button)) {
-		// 	getRootPane().setDefaultButton(button);
-		// 	repaint();
-		// } else {
-		// 	return;
-		// }
+	private double[] perspectiveStuff(double[] point3d) {
+		if (point3d.length != 3) {
+			return null;
+		}
+
+		double x = point3d[0];
+		double y = point3d[1];
+		double z = point3d[2];
+
+		x *= scale;
+		y *= scale;
+		z *= scale;
+
+		double xp = (x * n) / z;
+		double yp = (y * n) / z;
+
+		// normalize the points to the center of the screen
+		xp += DEFAULT_WIDTH / 2;
+		yp += DEFAULT_HEIGHT / 2;
+
+		double[] point2d = {xp, yp};
+		return point2d;
 	}
+
+	public void actionPerformed(ActionEvent e) {}
 
 	private class MyMouseListener implements MouseListener {
 		public void mouseClicked(MouseEvent e) {
 			// System.out.println("(" + e.getX() + ", " + e.getY() + ")");
+			repaint();
 		}
 
 		public void mouseExited(MouseEvent e) {
