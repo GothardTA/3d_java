@@ -6,10 +6,8 @@ import javax.swing.*;
 public class Main extends JFrame {
 
     private static int cameraPos[] = {0, 0, -55};
-	private static double cameraAngle[] = {0.0, 0.0, 0.0};
 	private static double fov = 60.0;
 	private static double n = 1.0 / Math.tan((fov * 3.1415 / 180.0) / 180.0);
-	
 	private static double scale = 50.0;
 
 	private static double[][] cubeVertexes = {
@@ -43,7 +41,7 @@ public class Main extends JFrame {
 
  
     public Main() {
-        super("Lines Drawing Demo");
+        super("3D Cube");
 		addKeyListener(new CustomKeyListener());
  
         setSize(800, 800);
@@ -55,9 +53,11 @@ public class Main extends JFrame {
 				cubeVertexes[row][col] *= scale;
 			}
 		}
+
+		super.addMouseMotionListener( new MyMouseListener() );
     }
  
-    void drawLines(Graphics g) {
+    static void drawLines(Graphics g) {
         // Graphics2D g2d = (Graphics2D) g;
  
         for (int[] edge : cubeEdges) {
@@ -79,7 +79,7 @@ public class Main extends JFrame {
         drawLines(g);
     }
 
-	private double[] rotateX3D(double[] point, double angle) {
+	private static double[] rotateX3D(double[] point, double angle) {
 		double x = point[0];
 		double y = point[1];
 		double z = point[2];
@@ -95,7 +95,7 @@ public class Main extends JFrame {
 		return newPoint;
 	}
 
-	private double[] rotateY3D(double[] point, double angle) {
+	private static double[] rotateY3D(double[] point, double angle) {
 		double x = point[0];
 		double y = point[1];
 		double z = point[2];
@@ -111,7 +111,7 @@ public class Main extends JFrame {
 		return newPoint;
 	}
 
-	private double[] rotateZ3D(double[] point, double angle) {
+	private static double[] rotateZ3D(double[] point, double angle) {
 		double x = point[0];
 		double y = point[1];
 		double z = point[2];
@@ -127,7 +127,7 @@ public class Main extends JFrame {
 		return newPoint;
 	}
 
-	private void rotateAllPoints(double x, double y, double z) {
+	private static void rotateAllPoints(double x, double y, double z) {
 		for (int i = 0; i < cubeVertexes.length; i++) {
 			cubeVertexes[i] = rotateX3D(cubeVertexes[i], x);
 			cubeVertexes[i] = rotateY3D(cubeVertexes[i], y);
@@ -135,7 +135,7 @@ public class Main extends JFrame {
 		}
 	}
 
-    private double[] perspectiveStuff(double[] point3d) {
+    private static double[] perspectiveStuff(double[] point3d) {
 		if (point3d.length != 3) {
 			return null;
 		}
@@ -182,22 +182,22 @@ public class Main extends JFrame {
 				cameraPos[1] += -5;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_UP) {
-				rotateAllPoints(1, 0, 0);
+				rotateAllPoints(5, 0, 0);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-				rotateAllPoints(-1, 0, 0);
+				rotateAllPoints(-5, 0, 0);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-				rotateAllPoints(0, -1, 0);
+				rotateAllPoints(0, -5, 0);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-				rotateAllPoints(0, 1, 0);
+				rotateAllPoints(0, 5, 0);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_EQUALS) {
-				rotateAllPoints(0, 0, 1);
+				rotateAllPoints(0, 0, 5);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_MINUS) {
-				rotateAllPoints(0, 0, -1);
+				rotateAllPoints(0, 0, -5);
 			}
 
 			repaint();
@@ -205,7 +205,22 @@ public class Main extends JFrame {
 
 		public void keyReleased(KeyEvent e) {
 		}   
-	 }
+	}
+	
+	private class MyMouseListener implements MouseMotionListener {
+		public void mouseMoved(MouseEvent e) {
+			rotateAllPoints(
+				(MouseInfo.getPointerInfo().getLocation().x - 400) * 0.001,
+				(MouseInfo.getPointerInfo().getLocation().y - 400) * 0.001,
+				0
+			);
+			repaint();
+		}
+	
+		public void mouseDragged(MouseEvent e) {
+			
+		}
+	}
  
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
