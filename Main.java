@@ -71,11 +71,7 @@ public class Main extends JFrame {
 			g.drawLine((int) first[0], (int) first[1], (int) second[0], (int) second[1]);
 		}
 		
-		for (int i = 0; i < cubeVertexes.length; i++) {
-			cubeVertexes[i] = rotateX3D(cubeVertexes[i]);
-			cubeVertexes[i] = rotateY3D(cubeVertexes[i]);
-			cubeVertexes[i] = rotateZ3D(cubeVertexes[i]);
-		}
+		
     }
  
     public void paint(Graphics g) {
@@ -83,7 +79,7 @@ public class Main extends JFrame {
         drawLines(g);
     }
 
-	private double[] rotateX3D(double[] point) {
+	private double[] rotateX3D(double[] point, double angle) {
 		double x = point[0];
 		double y = point[1];
 		double z = point[2];
@@ -93,13 +89,13 @@ public class Main extends JFrame {
 		newPoint[1] = point[1];
 		newPoint[2] = point[2];
 
-		newPoint[1] = (y * Math.cos(Math.toRadians(cameraAngle[0]))) - (z * Math.sin(Math.toRadians(cameraAngle[0])));
-		newPoint[2] = (z * Math.cos(Math.toRadians(cameraAngle[0]))) + (y * Math.sin(Math.toRadians(cameraAngle[0])));
+		newPoint[1] = (y * Math.cos(Math.toRadians(angle))) - (z * Math.sin(Math.toRadians(angle)));
+		newPoint[2] = (z * Math.cos(Math.toRadians(angle))) + (y * Math.sin(Math.toRadians(angle)));
 
 		return newPoint;
 	}
 
-	private double[] rotateY3D(double[] point) {
+	private double[] rotateY3D(double[] point, double angle) {
 		double x = point[0];
 		double y = point[1];
 		double z = point[2];
@@ -109,13 +105,13 @@ public class Main extends JFrame {
 		newPoint[1] = point[1];
 		newPoint[2] = point[2];
 
-		newPoint[0] = (x * Math.cos(Math.toRadians(cameraAngle[1]))) - (z * Math.sin(Math.toRadians(cameraAngle[1])));
-		newPoint[2] = (z * Math.cos(Math.toRadians(cameraAngle[1]))) + (x * Math.sin(Math.toRadians(cameraAngle[1])));
+		newPoint[0] = (x * Math.cos(Math.toRadians(angle))) - (z * Math.sin(Math.toRadians(angle)));
+		newPoint[2] = (z * Math.cos(Math.toRadians(angle))) + (x * Math.sin(Math.toRadians(angle)));
 
 		return newPoint;
 	}
 
-	private double[] rotateZ3D(double[] point) {
+	private double[] rotateZ3D(double[] point, double angle) {
 		double x = point[0];
 		double y = point[1];
 		double z = point[2];
@@ -125,10 +121,18 @@ public class Main extends JFrame {
 		newPoint[1] = point[1];
 		newPoint[2] = point[2];
 
-		newPoint[0] = (x * Math.cos(Math.toRadians(cameraAngle[2]))) - (y * Math.sin(Math.toRadians(cameraAngle[2])));
-		newPoint[1] = (y * Math.cos(Math.toRadians(cameraAngle[2]))) + (x * Math.sin(Math.toRadians(cameraAngle[2])));
+		newPoint[0] = (x * Math.cos(Math.toRadians(angle))) - (y * Math.sin(Math.toRadians(angle)));
+		newPoint[1] = (y * Math.cos(Math.toRadians(angle))) + (x * Math.sin(Math.toRadians(angle)));
 
 		return newPoint;
+	}
+
+	private void rotateAllPoints(double x, double y, double z) {
+		for (int i = 0; i < cubeVertexes.length; i++) {
+			cubeVertexes[i] = rotateX3D(cubeVertexes[i], x);
+			cubeVertexes[i] = rotateY3D(cubeVertexes[i], y);
+			cubeVertexes[i] = rotateZ3D(cubeVertexes[i], z);
+		}
 	}
 
     private double[] perspectiveStuff(double[] point3d) {
@@ -178,22 +182,22 @@ public class Main extends JFrame {
 				cameraPos[1] += -5;
 			}
 			if (e.getKeyCode() == KeyEvent.VK_UP) {
-				cameraAngle[0] += 1;
+				rotateAllPoints(1, 0, 0);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-				cameraAngle[0] += -1;
+				rotateAllPoints(-1, 0, 0);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-				cameraAngle[1] += -1;
+				rotateAllPoints(0, -1, 0);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-				cameraAngle[1] += 1;
+				rotateAllPoints(0, 1, 0);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_EQUALS) {
-				cameraAngle[2] += -1;
+				rotateAllPoints(0, 0, 1);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_MINUS) {
-				cameraAngle[2] += 1;
+				rotateAllPoints(0, 0, -1);
 			}
 
 			repaint();
