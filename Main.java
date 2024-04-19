@@ -83,63 +83,27 @@ public class Main extends JFrame {
         drawLines(g);
     }
 
-	private static double[] rotateX3D(double[] point, double angle) {
-		double x = point[0];
-		double y = point[1];
-		double z = point[2];
-
-		double[] newPoint = new double[3];
-		newPoint[0] = point[0];
-		newPoint[1] = point[1];
-		newPoint[2] = point[2];
-
-		newPoint[1] = (y * Math.cos(Math.toRadians(angle))) - (z * Math.sin(Math.toRadians(angle)));
-		newPoint[2] = (z * Math.cos(Math.toRadians(angle))) + (y * Math.sin(Math.toRadians(angle)));
-
-		return newPoint;
-	}
-
-	private static double[] rotateY3D(double[] point, double angle) {
-		double x = point[0];
-		double y = point[1];
-		double z = point[2];
-
-		double[] newPoint = new double[3];
-		newPoint[0] = point[0];
-		newPoint[1] = point[1];
-		newPoint[2] = point[2];
-
-		newPoint[0] = (x * Math.cos(Math.toRadians(angle))) - (z * Math.sin(Math.toRadians(angle)));
-		newPoint[2] = (z * Math.cos(Math.toRadians(angle))) + (x * Math.sin(Math.toRadians(angle)));
-
-		return newPoint;
-	}
-
-	private static double[] rotateZ3D(double[] point, double angle) {
-		double x = point[0];
-		double y = point[1];
-		double z = point[2];
-
-		double[] newPoint = new double[3];
-		newPoint[0] = point[0];
-		newPoint[1] = point[1];
-		newPoint[2] = point[2];
-
-		newPoint[0] = (x * Math.cos(Math.toRadians(angle))) - (y * Math.sin(Math.toRadians(angle)));
-		newPoint[1] = (y * Math.cos(Math.toRadians(angle))) + (x * Math.sin(Math.toRadians(angle)));
-
-		return newPoint;
-	}
-
 	private static void rotateAllPoints(double x, double y, double z) {
 		cameraAngle[0] += x;
 		cameraAngle[1] += y;
 		cameraAngle[2] += z;
 
 		for (int i = 0; i < vertexes.length; i++) {
-			vertexes[i] = rotateX3D(vertexes[i], x);
-			vertexes[i] = rotateY3D(vertexes[i], y);
-			vertexes[i] = rotateZ3D(vertexes[i], z);
+			vertexes[i] = Rotation.rotateX3D(vertexes[i], x);
+			vertexes[i] = Rotation.rotateY3D(vertexes[i], y);
+			vertexes[i] = Rotation.rotateZ3D(vertexes[i], z);
+		}
+	}
+
+	private static void rotateAllPointsAroundPoint(double x, double y, double z, double[] point) {
+		cameraAngle[0] += x;
+		cameraAngle[1] += y;
+		cameraAngle[2] += z;
+
+		for (int i = 0; i < vertexes.length; i++) {
+			vertexes[i] = Rotation.rotateX3DAroundPoint(vertexes[i], point, x);
+			vertexes[i] = Rotation.rotateY3DAroundPoint(vertexes[i], point, y);
+			vertexes[i] = Rotation.rotateZ3DAroundPoint(vertexes[i], point, z);
 		}
 	}
 
@@ -229,10 +193,11 @@ public class Main extends JFrame {
 	private class MyMouseListener implements MouseMotionListener {
 		public void mouseMoved(MouseEvent e) {
 			resetRotateAllPoints();
-			rotateAllPoints(
+			rotateAllPointsAroundPoint(
 				(MouseInfo.getPointerInfo().getLocation().y - 400),
 				(MouseInfo.getPointerInfo().getLocation().x - 400),
-				0
+				0,
+				cameraPos
 			);
 			repaint();
 		}
