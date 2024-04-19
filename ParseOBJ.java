@@ -45,9 +45,9 @@ public class ParseOBJ {
 
                 if (data.startsWith("f ")) {
                     String[] coords = data.split(" ");
-                    int p1 = Integer.parseInt(coords[1].split("//")[0]);
-                    int p2 = Integer.parseInt(coords[2].split("//")[0]);
-                    int p3 = Integer.parseInt(coords[3].split("//")[0]);
+                    int p1 = Integer.parseInt(coords[1].split("/")[0]);
+                    int p2 = Integer.parseInt(coords[2].split("/")[0]);
+                    int p3 = Integer.parseInt(coords[3].split("/")[0]);
 
                     int[] triangle = {p1, p2, p3};
 
