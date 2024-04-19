@@ -46,7 +46,7 @@ public class Main extends JFrame {
 
 			double[] first = vertex1.perspective2D(cameraPos, WIDTH, HEIGHT, fov);
 			double[] second = vertex2.perspective2D(cameraPos, WIDTH, HEIGHT, fov);
-			double[] third = vertex2.perspective2D(cameraPos, WIDTH, HEIGHT, fov);
+			double[] third = vertex3.perspective2D(cameraPos, WIDTH, HEIGHT, fov);
 
 			g.setColor(Color.BLACK);
 			g.drawLine((int) first[0], (int) first[1], (int) second[0], (int) second[1]);
