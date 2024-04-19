@@ -1,6 +1,6 @@
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
+import java.util.*;
 
 import javax.swing.*;
 
@@ -18,6 +18,8 @@ public class Main extends JFrame {
 	private static ArrayList<Vector3d> vertexes;
 	private static ArrayList<int[]> triangles;
 
+	Random rand = new Random();
+
  
     public Main() {
         super("3D Cube");
@@ -28,16 +30,17 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 		super.addMouseMotionListener( new MyMouseListener() );
 
-		vertexes = ParseOBJ.getVertexesFromFile("./res/objects/cutcube.obj");
-		triangles = ParseOBJ.getTrianglesFromFile("./res/objects/cutcube.obj");
+		vertexes = ParseOBJ.getVertexesFromFile("./res/objects/cubehole.obj");
+		triangles = ParseOBJ.getTrianglesFromFile("./res/objects/cubehole.obj");
 
 		for (Vector3d vertex : vertexes) {
 			vertex.scale(scale);
 		}
     }
  
-    static void drawLines(Graphics g) {
+    void drawLines(Graphics g) {
         // Graphics2D g2d = (Graphics2D) g;
+		sortTriangles(triangles);
  
         for (int[] triangle : triangles) {
 			Vector3d vertex1 = vertexes.get(triangle[0]-1);
@@ -48,10 +51,18 @@ public class Main extends JFrame {
 			double[] second = vertex2.perspective2D(cameraPos, WIDTH, HEIGHT, fov);
 			double[] third = vertex3.perspective2D(cameraPos, WIDTH, HEIGHT, fov);
 
-			g.setColor(Color.BLACK);
-			g.drawLine((int) first[0], (int) first[1], (int) second[0], (int) second[1]);
-			g.drawLine((int) second[0], (int) second[1], (int) third[0], (int) third[1]);
-			g.drawLine((int) third[0], (int) third[1], (int) first[0], (int) first[1]);
+			g.setColor(new Color(50, 50, 50));
+			g.fillPolygon(
+				new int[] {(int) first[0], (int) second[0], (int) third[0]},
+				new int[] {(int) first[1], (int) second[1], (int) third[1]},
+				3
+			);
+
+			// g.setColor(new Color(255, 0, 0));
+			// g.drawLine((int) first[0], (int) first[1], (int) second[0], (int) second[1]);
+			// g.drawLine((int) second[0], (int) second[1], (int) third[0], (int) third[1]);
+			// g.drawLine((int) third[0], (int) third[1], (int) first[0], (int) first[1]);
+
 		}
 		
 		
@@ -61,6 +72,30 @@ public class Main extends JFrame {
         super.paint(g);
         drawLines(g);
     }
+
+	// sorts them from back to front
+	private static void sortTriangles(ArrayList<int[]> tris) {
+		ArrayList<int[]> newTris = new ArrayList<int[]>();
+		for (int i = 0; i < tris.size(); i++) {
+			int[] tri = tris.get(i);
+			double averageZ = (vertexes.get(tri[0]-1).getZ() + vertexes.get(tri[1]-1).getZ() + vertexes.get(tri[2]-1).getZ()) / 3.0;
+
+			if (newTris.size() == 0) {
+				newTris.add(tri);
+			} else {
+				for (int j = 0; j < newTris.size(); j++) {
+					int[] tmpTri = newTris.get(j);
+					double tmpAverageZ = (vertexes.get(tmpTri[0]-1).getZ() + vertexes.get(tmpTri[1]-1).getZ() + vertexes.get(tmpTri[2]-1).getZ()) / 3.0;
+					if (averageZ > tmpAverageZ) {
+						newTris.add(j, tri);
+						break;
+					}
+				}
+			}
+		}
+
+		tris = newTris;
+	}
 
 	private static void rotateAllPoints(double x, double y, double z) {
 		for (Vector3d vertex : vertexes) {
@@ -102,10 +137,10 @@ public class Main extends JFrame {
 				cameraPos.setZ(cameraPos.getZ() - 5);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-				cameraPos.setY(cameraPos.getY() + 5);
+				cameraPos.setY(cameraPos.getY() - 5);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
-				cameraPos.setY(cameraPos.getY() - 5);
+				cameraPos.setY(cameraPos.getY() + 5);
 			}
 			// rotation before mouse could do it
 			// if (e.getKeyCode() == KeyEvent.VK_UP) {
