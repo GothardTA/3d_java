@@ -28,8 +28,8 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 		super.addMouseMotionListener( new MyMouseListener() );
 
-		vertexes = ParseOBJ.getVertexesFromFile("./res/objects/test.obj");
-		triangles = ParseOBJ.getTrianglesFromFile("./res/objects/test.obj");
+		vertexes = ParseOBJ.getVertexesFromFile("./res/objects/cutcube.obj");
+		triangles = ParseOBJ.getTrianglesFromFile("./res/objects/cutcube.obj");
 
 		for (Vector3d vertex : vertexes) {
 			vertex.scale(scale);
