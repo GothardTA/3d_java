@@ -13,7 +13,7 @@ public class Main extends JFrame {
     private static Vector3d cameraPos = new Vector3d(0, 0, -55);
 	private static double[] cameraAngle = {0.0, 0.0, 0.0};
 	private static double fov = 60.0;
-	private static double scale = 50.0;
+	private static double scale = 20.0;
 
 	private static ArrayList<Vector3d> vertexes;
 	private static ArrayList<int[]> triangles;
@@ -30,8 +30,8 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 		super.addMouseMotionListener( new MyMouseListener() );
 
-		vertexes = ParseOBJ.getVertexesFromFile("./res/objects/cubehole.obj");
-		triangles = ParseOBJ.getTrianglesFromFile("./res/objects/cubehole.obj");
+		vertexes = ParseOBJ.getVertexesFromFile("./res/objects/suzanne.obj");
+		triangles = ParseOBJ.getTrianglesFromFile("./res/objects/suzanne.obj");
 
 		for (Vector3d vertex : vertexes) {
 			vertex.scale(scale);
