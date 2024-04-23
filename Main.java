@@ -12,7 +12,7 @@ public class Main extends JFrame {
 
     private static Vector3d cameraPos = new Vector3d(0, 0, -55);
 	private static double[] cameraAngle = {0.0, 0.0, 0.0};
-	private static double fov = 50.0;
+	private static double fov = 60.0;
 	private static double scale = 20.0;
 	private static double mouseSensitivity = 0.7;
 
@@ -52,7 +52,8 @@ public class Main extends JFrame {
 			double[] second = vertex2.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 			double[] third = vertex3.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 
-			g.setColor(new Color(rand.nextInt(2)<<7, rand.nextInt(2)<<7, rand.nextInt(2)<<7));
+			// g.setColor(new Color(rand.nextInt(2)<<7, rand.nextInt(2)<<7, rand.nextInt(2)<<7));
+			g.setColor(Color.BLACK);
 			g.fillPolygon(
 				new int[] {(int) first[0], (int) second[0], (int) third[0]},
 				new int[] {(int) first[1], (int) second[1], (int) third[1]},
