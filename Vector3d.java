@@ -1,17 +1,9 @@
 public class Vector3d {
-    private double startX;
-    private double startY;
-    private double startZ;
-
     private double x;
     private double y;
     private double z;
 
     public Vector3d(double x, double y, double z) {
-        this.startX = x;
-        this.startY = y;
-        this.startZ = z;
-        
         this.x = x;
         this.y = y;
         this.z = z;
@@ -51,77 +43,81 @@ public class Vector3d {
     }
 
     // convert to 2d
-    public double[] perspective2D(Vector3d cameraPos, int width, int height, double fov) {
+    public double[] perspective2D(Vector3d cameraPos, double[] cameraAngle, int screenWidth, int screenHeight, double fov) {
         // double n = 1.0 / Math.tan(Math.toRadians(fov));
-        double n = 1.0 / Math.tan((fov * 3.1415 / 180.0) / 180.0);
+        double n = 1.0 / Math.tan((fov * 3.14159 / 180.0) / 180.0);
 
-        double xt = x;
-		double yt = y;
-		double zt = z;
+        double point[] = {x, y, z};
 
-		xt -= cameraPos.getX();
-		yt -= cameraPos.getY();
-		zt -= cameraPos.getZ();
+		point[0] -= cameraPos.getX();
+		point[1] -= cameraPos.getY();
+		point[2] -= cameraPos.getZ();
 
-		double xp = (xt * n) / zt;
-		double yp = (yt * n) / zt;
+        point = rotateXAroundPoint(point[0], point[1], point[2], cameraPos, cameraAngle[0]);
+        point = rotateYAroundPoint(point[0], point[1], point[2], cameraPos, cameraAngle[1]);
+        point = rotateZAroundPoint(point[0], point[1], point[2], cameraPos, cameraAngle[2]);
+
+		double xp = (point[0] * n) / point[2];
+		double yp = (point[1] * n) / point[2];
 
 		// normalize the points to the center of the screen
-		xp += width / 2;
-		yp += height / 2;
+		xp += screenWidth / 2;
+		yp += screenHeight / 2;
 
 		double[] point2d = {xp, yp};
 		return point2d;
     }
 
     // rotation
-	public void rotateX(double angle) {
-        // this.x = x;
-		this.y = (y * Math.cos(Math.toRadians(angle))) - (z * Math.sin(Math.toRadians(angle)));
-		this.z = (z * Math.cos(Math.toRadians(angle))) + (y * Math.sin(Math.toRadians(angle)));
-	}
+	// private void rotateX(double xt, double yt, double zt, double angle) {
+    //     // xt = xt;
+	// 	yt = (yt * Math.cos(Math.toRadians(angle))) - (zt * Math.sin(Math.toRadians(angle)));
+	// 	zt = (zt * Math.cos(Math.toRadians(angle))) + (yt * Math.sin(Math.toRadians(angle)));
+	// }
 
-	public void rotateY(double angle) {
-		this.x = (x * Math.cos(Math.toRadians(angle))) - (z * Math.sin(Math.toRadians(angle)));
-        // this.y = y;
-		this.z = (z * Math.cos(Math.toRadians(angle))) + (x * Math.sin(Math.toRadians(angle)));
-	}
+	// private void rotateY(double xt, double yt, double zt, double angle) {
+	// 	xt = (xt * Math.cos(Math.toRadians(angle))) - (zt * Math.sin(Math.toRadians(angle)));
+    //     // yt = yt;
+	// 	zt = (zt * Math.cos(Math.toRadians(angle))) + (xt * Math.sin(Math.toRadians(angle)));
+	// }
 
-	public void rotateZ(double angle) {
-		this.x = (x * Math.cos(Math.toRadians(angle))) - (y * Math.sin(Math.toRadians(angle)));
-		this.y = (y * Math.cos(Math.toRadians(angle))) + (x * Math.sin(Math.toRadians(angle)));
-        // this.z = z;
-	}
+	// private void rotateZ(double xt, double yt, double zt, double angle) {
+	// 	xt = (xt * Math.cos(Math.toRadians(angle))) - (y * Math.sin(Math.toRadians(angle)));
+	// 	yt = (yt * Math.cos(Math.toRadians(angle))) + (x * Math.sin(Math.toRadians(angle)));
+    //     // zt = zt;
+	// }
 
     // rotation around a point
-    public void rotateXAroundPoint(Vector3d point, double angle) {
-        double[] vector = {x-point.getX(), y-point.getY(), z-point.getZ()};
+    private double[] rotateXAroundPoint(double xt, double yt, double zt, Vector3d point, double angle) {
+        double[] vector = {xt-point.getX(), yt-point.getY(), zt-point.getZ()};
+        double[] newPoint = new double[3];
 
-        // this.x = x;
-        this.y = point.getY() + ( Math.cos(Math.toRadians(angle)) * vector[1] ) - ( Math.sin(Math.toRadians(angle)) * vector[2] );
-        this.z = point.getZ() + ( Math.cos(Math.toRadians(angle)) * vector[2] ) + ( Math.sin(Math.toRadians(angle)) * vector[1] );
+        newPoint[0] = xt;
+        newPoint[1] = point.getY() + ( Math.cos(Math.toRadians(angle)) * vector[1] ) - ( Math.sin(Math.toRadians(angle)) * vector[2] );
+        newPoint[2] = point.getZ() + ( Math.cos(Math.toRadians(angle)) * vector[2] ) + ( Math.sin(Math.toRadians(angle)) * vector[1] );
+
+        return newPoint;
     }
 
-    public void rotateYAroundPoint(Vector3d point, double angle) {
-        double[] vector = {x-point.getX(), y-point.getY(), z-point.getZ()};
+    private double[] rotateYAroundPoint(double xt, double yt, double zt, Vector3d point, double angle) {
+        double[] vector = {xt-point.getX(), yt-point.getY(), zt-point.getZ()};
+        double[] newPoint = new double[3];
 
-        this.x = point.getX() + ( Math.cos(Math.toRadians(angle)) * vector[0] ) - ( Math.sin(Math.toRadians(angle)) * vector[2] );
-        // this.y = y;
-        this.z = point.getZ() + ( Math.cos(Math.toRadians(angle)) * vector[2] ) + ( Math.sin(Math.toRadians(angle)) * vector[0] );
+        newPoint[0] = point.getX() + ( Math.cos(Math.toRadians(angle)) * vector[0] ) - ( Math.sin(Math.toRadians(angle)) * vector[2] );
+        newPoint[1] = yt;
+        newPoint[2] = point.getZ() + ( Math.cos(Math.toRadians(angle)) * vector[2] ) + ( Math.sin(Math.toRadians(angle)) * vector[0] );
+
+        return newPoint;
     }
 
-    public void rotateZAroundPoint(Vector3d point, double angle) {
-        double[] vector = {x-point.getX(), y-point.getY(), z-point.getZ()};
+    private double[] rotateZAroundPoint(double xt, double yt, double zt, Vector3d point, double angle) {
+        double[] vector = {xt-point.getX(), yt-point.getY(), zt-point.getZ()};
+        double[] newPoint = new double[3];
 
-        this.x = point.getX() + ( Math.cos(Math.toRadians(angle)) * vector[0] ) - ( Math.sin(Math.toRadians(angle)) * vector[1] );
-        this.y = point.getY() + ( Math.cos(Math.toRadians(angle)) * vector[1] ) + ( Math.sin(Math.toRadians(angle)) * vector[0] );
-        // this.z = z;
-    }
+        newPoint[0] = point.getX() + ( Math.cos(Math.toRadians(angle)) * vector[0] ) - ( Math.sin(Math.toRadians(angle)) * vector[1] );
+        newPoint[1] = point.getY() + ( Math.cos(Math.toRadians(angle)) * vector[1] ) + ( Math.sin(Math.toRadians(angle)) * vector[0] );
+        newPoint[2] = zt;
 
-    // reset points
-    public void reset() {
-        x = startX;
-        y = startY;
-        z = startZ;
+        return newPoint;
     }
 }

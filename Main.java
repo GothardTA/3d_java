@@ -14,6 +14,7 @@ public class Main extends JFrame {
 	private static double[] cameraAngle = {0.0, 0.0, 0.0};
 	private static double fov = 60.0;
 	private static double scale = 20.0;
+	private static double mouseSensitivity = 0.7;
 
 	private static ArrayList<Vector3d> vertexes;
 	private static ArrayList<int[]> triangles;
@@ -30,8 +31,8 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 		super.addMouseMotionListener( new MyMouseListener() );
 
-		vertexes = ParseOBJ.getVertexesFromFile("./res/objects/suzanne.obj");
-		triangles = ParseOBJ.getTrianglesFromFile("./res/objects/suzanne.obj");
+		vertexes = ParseOBJ.getVertexesFromFile("./res/objects/cube.obj");
+		triangles = ParseOBJ.getTrianglesFromFile("./res/objects/cube.obj");
 
 		for (Vector3d vertex : vertexes) {
 			vertex.scale(scale);
@@ -47,11 +48,11 @@ public class Main extends JFrame {
 			Vector3d vertex2 = vertexes.get(triangle[1]-1);
 			Vector3d vertex3 = vertexes.get(triangle[2]-1);
 
-			double[] first = vertex1.perspective2D(cameraPos, WIDTH, HEIGHT, fov);
-			double[] second = vertex2.perspective2D(cameraPos, WIDTH, HEIGHT, fov);
-			double[] third = vertex3.perspective2D(cameraPos, WIDTH, HEIGHT, fov);
+			double[] first = vertex1.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
+			double[] second = vertex2.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
+			double[] third = vertex3.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 
-			g.setColor(new Color(50, 50, 50));
+			g.setColor(new Color(rand.nextInt(2)<<7, rand.nextInt(2)<<7, rand.nextInt(2)<<7));
 			g.fillPolygon(
 				new int[] {(int) first[0], (int) second[0], (int) third[0]},
 				new int[] {(int) first[1], (int) second[1], (int) third[1]},
@@ -71,10 +72,14 @@ public class Main extends JFrame {
     public void paint(Graphics g) {
         super.paint(g);
         drawLines(g);
+		// g.drawString("(" + cameraAngle[0] + ", " + cameraAngle[1] + ", " + cameraAngle[2] + ")", 100, 100);
     }
 
 	// sorts them from back to front
 	private static void sortTriangles(ArrayList<int[]> tris) {
+		// MUST DO:
+		// Sort triangles from farthest to camera to cloest to camera
+		// currently sorts by z value
 		ArrayList<int[]> newTris = new ArrayList<int[]>();
 		for (int i = 0; i < tris.size(); i++) {
 			int[] tri = tris.get(i);
@@ -97,28 +102,28 @@ public class Main extends JFrame {
 		tris = newTris;
 	}
 
-	private static void rotateAllPoints(double x, double y, double z) {
-		for (Vector3d vertex : vertexes) {
-			vertex.rotateX(x);
-			vertex.rotateY(y);
-			vertex.rotateZ(z);
-		}
-	}
+	// private static void rotateAllPoints(double x, double y, double z) {
+	// 	for (Vector3d vertex : vertexes) {
+	// 		vertex.rotateX(x);
+	// 		vertex.rotateY(y);
+	// 		vertex.rotateZ(z);
+	// 	}
+	// }
 
-	private static void rotateAllPointsAroundPoint(Vector3d point, double x, double y, double z) {
-		for (Vector3d vertex : vertexes) {
-			vertex.rotateXAroundPoint(point, x);
-			vertex.rotateYAroundPoint(point, y);
-			vertex.rotateZAroundPoint(point, z);
-		}
-	}
+	// private static void rotateAllPointsAroundPoint(Vector3d point, double x, double y, double z) {
+	// 	for (Vector3d vertex : vertexes) {
+	// 		vertex.rotateXAroundPoint(point, x);
+	// 		vertex.rotateYAroundPoint(point, y);
+	// 		vertex.rotateZAroundPoint(point, z);
+	// 	}
+	// }
 
-	private static void resetRotateAllPoints() {
-		for (Vector3d vertex : vertexes) {
-			vertex.reset();
-			vertex.scale(scale);
-		}
-	}
+	// private static void resetRotateAllPoints() {
+	// 	for (Vector3d vertex : vertexes) {
+	// 		vertex.reset();
+	// 		vertex.scale(scale);
+	// 	}
+	// }
 
 	class CustomKeyListener implements KeyListener {
 		public void keyTyped(KeyEvent e) {
@@ -174,13 +179,14 @@ public class Main extends JFrame {
 	
 	private class MyMouseListener implements MouseMotionListener {
 		public void mouseMoved(MouseEvent e) {
-			resetRotateAllPoints();
-			rotateAllPointsAroundPoint(
-				cameraPos,
-				(MouseInfo.getPointerInfo().getLocation().y - 400),
-				(MouseInfo.getPointerInfo().getLocation().x - 400),
-				0
-			);
+			double movementX = (e.getX() - (WIDTH/2)) / ((double)WIDTH/2);
+			double movementY = (e.getY() - (WIDTH/2)) / ((double)WIDTH/2);
+
+			movementX *= 180;
+			movementY *= 180;
+
+			cameraAngle[0] = (movementY * mouseSensitivity);
+			cameraAngle[1] = (movementX * mouseSensitivity);
 			repaint();
 		}
 	
