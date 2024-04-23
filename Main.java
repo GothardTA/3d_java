@@ -12,7 +12,7 @@ public class Main extends JFrame {
 
     private static Vector3d cameraPos = new Vector3d(0, 0, -55);
 	private static double[] cameraAngle = {0.0, 0.0, 0.0};
-	private static double fov = 60.0;
+	private static double fov = 50.0;
 	private static double scale = 20.0;
 	private static double mouseSensitivity = 0.7;
 
