@@ -120,4 +120,18 @@ public class Vector3d {
 
         return newPoint;
     }
+
+    public double getDistanceFromPoint(Vector3d point) {
+        double distance = Math.sqrt(
+            Math.pow(
+                Math.sqrt(
+                    Math.pow(x - point.getX(), 2) +
+                    Math.pow(y - point.getY(), 2)
+                ), 2
+            ) + 
+            Math.pow( z - point.getZ(), 2)
+        );
+
+        return distance;
+    }
 }
