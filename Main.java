@@ -101,9 +101,9 @@ public class Main extends JFrame {
 		// }
 
 		for (int[] tri : tris) {
-			double distance1 = vertexes.get(tri[0]).getDistanceFromPoint(cameraPos);
-			double distance2 = vertexes.get(tri[1]).getDistanceFromPoint(cameraPos);
-			double distance3 = vertexes.get(tri[2]).getDistanceFromPoint(cameraPos);
+			double distance1 = vertexes.get(tri[0]-1).getDistanceFromPoint(cameraPos);
+			double distance2 = vertexes.get(tri[1]-1).getDistanceFromPoint(cameraPos);
+			double distance3 = vertexes.get(tri[2]-1).getDistanceFromPoint(cameraPos);
 			double average = (distance1 + distance2 + distance3) / 3;
 
 			if (newTris.size() == 0) {
@@ -111,19 +111,29 @@ public class Main extends JFrame {
 				continue;
 			}
 
+			boolean added = false;
+
 			for (int i = 0; i < newTris.size(); i++) {
-				double otherDistance1 = vertexes.get(newTris.get(i)[0]).getDistanceFromPoint(cameraPos);
-				double otherDistance2 = vertexes.get(newTris.get(i)[1]).getDistanceFromPoint(cameraPos);
-				double otherDistance3 = vertexes.get(newTris.get(i)[2]).getDistanceFromPoint(cameraPos);
+				double otherDistance1 = vertexes.get(newTris.get(i)[0]-1).getDistanceFromPoint(cameraPos);
+				double otherDistance2 = vertexes.get(newTris.get(i)[1]-1).getDistanceFromPoint(cameraPos);
+				double otherDistance3 = vertexes.get(newTris.get(i)[2]-1).getDistanceFromPoint(cameraPos);
 				double otherAverage = (distance1 + distance2 + distance3) / 3;
 
 				if (average < otherAverage) {
 					newTris.add(i, tri);
+					added = true;
+					break;
 				}
+			}
+
+			if (!added) {
+				newTris.add(tri);
 			}
 		}
 
-		tris = newTris;
+		for (int i = 0; i < tris.size(); i++) {
+			tris.set(i, newTris.get(tris.size() - i - 1));
+		}
 	}
 
 	// private static void rotateAllPoints(double x, double y, double z) {
