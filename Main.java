@@ -31,8 +31,8 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 		super.addMouseMotionListener( new MyMouseListener() );
 
-		vertexes = ParseOBJ.getVertexesFromFile("./res/objects/cube.obj");
-		triangles = ParseOBJ.getTrianglesFromFile("./res/objects/cube.obj");
+		vertexes = ParseOBJ.getVertexesFromFile("./res/objects/cutcube.obj");
+		triangles = ParseOBJ.getTrianglesFromFile("./res/objects/cutcube.obj");
 
 		for (Vector3d vertex : vertexes) {
 			vertex.scale(scale);
@@ -52,8 +52,8 @@ public class Main extends JFrame {
 			double[] second = vertex2.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 			double[] third = vertex3.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 
-			// g.setColor(new Color(rand.nextInt(2)<<7, rand.nextInt(2)<<7, rand.nextInt(2)<<7));
-			g.setColor(Color.BLACK);
+			g.setColor(new Color(rand.nextInt(3)<<6, rand.nextInt(3)<<6, rand.nextInt(3)<<6));
+			// g.setColor(Color.BLACK);
 			g.fillPolygon(
 				new int[] {(int) first[0], (int) second[0], (int) third[0]},
 				new int[] {(int) first[1], (int) second[1], (int) third[1]},
@@ -73,7 +73,7 @@ public class Main extends JFrame {
     public void paint(Graphics g) {
         super.paint(g);
         drawLines(g);
-		// g.drawString("(" + cameraAngle[0] + ", " + cameraAngle[1] + ", " + cameraAngle[2] + ")", 100, 100);
+		g.drawString("(" + cameraPos.getX() + ", " + cameraPos.getY() + ", " + cameraPos.getZ() + ")", 100, 100);
     }
 
 	// sorts them from back to front
@@ -82,20 +82,43 @@ public class Main extends JFrame {
 		// Sort triangles from farthest to camera to cloest to camera
 		// currently sorts by z value
 		ArrayList<int[]> newTris = new ArrayList<int[]>();
-		for (int i = 0; i < tris.size(); i++) {
-			int[] tri = tris.get(i);
-			double averageZ = (vertexes.get(tri[0]-1).getZ() + vertexes.get(tri[1]-1).getZ() + vertexes.get(tri[2]-1).getZ()) / 3.0;
+		// for (int i = 0; i < tris.size(); i++) {
+		// 	int[] tri = tris.get(i);
+		// 	double averageZ = (vertexes.get(tri[0]-1).getZ() + vertexes.get(tri[1]-1).getZ() + vertexes.get(tri[2]-1).getZ()) / 3.0;
+
+		// 	if (newTris.size() == 0) {
+		// 		newTris.add(tri);
+		// 	} else {
+		// 		for (int j = 0; j < newTris.size(); j++) {
+		// 			int[] tmpTri = newTris.get(j);
+		// 			double tmpAverageZ = (vertexes.get(tmpTri[0]-1).getZ() + vertexes.get(tmpTri[1]-1).getZ() + vertexes.get(tmpTri[2]-1).getZ()) / 3.0;
+		// 			if (averageZ > tmpAverageZ) {
+		// 				newTris.add(j, tri);
+		// 				break;
+		// 			}
+		// 		}
+		// 	}
+		// }
+
+		for (int[] tri : tris) {
+			double distance1 = vertexes.get(tri[0]).getDistanceFromPoint(cameraPos);
+			double distance2 = vertexes.get(tri[1]).getDistanceFromPoint(cameraPos);
+			double distance3 = vertexes.get(tri[2]).getDistanceFromPoint(cameraPos);
+			double average = (distance1 + distance2 + distance3) / 3;
 
 			if (newTris.size() == 0) {
 				newTris.add(tri);
-			} else {
-				for (int j = 0; j < newTris.size(); j++) {
-					int[] tmpTri = newTris.get(j);
-					double tmpAverageZ = (vertexes.get(tmpTri[0]-1).getZ() + vertexes.get(tmpTri[1]-1).getZ() + vertexes.get(tmpTri[2]-1).getZ()) / 3.0;
-					if (averageZ > tmpAverageZ) {
-						newTris.add(j, tri);
-						break;
-					}
+				continue;
+			}
+
+			for (int i = 0; i < newTris.size(); i++) {
+				double otherDistance1 = vertexes.get(newTris.get(i)[0]).getDistanceFromPoint(cameraPos);
+				double otherDistance2 = vertexes.get(newTris.get(i)[1]).getDistanceFromPoint(cameraPos);
+				double otherDistance3 = vertexes.get(newTris.get(i)[2]).getDistanceFromPoint(cameraPos);
+				double otherAverage = (distance1 + distance2 + distance3) / 3;
+
+				if (average < otherAverage) {
+					newTris.add(i, tri);
 				}
 			}
 		}
