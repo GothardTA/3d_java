@@ -1,8 +1,13 @@
 import java.awt.*;
+import java.awt.geom.*;
 import java.awt.event.*;
+import java.awt.image.*;
 import java.util.*;
+import java.io.File;
+import java.io.IOException;
 
 import javax.swing.*;
+import javax.imageio.*;
 
 
 public class Main extends JFrame {
@@ -42,8 +47,11 @@ public class Main extends JFrame {
     void drawLines(Graphics g) {
         // Graphics2D g2d = (Graphics2D) g;
 		sortTriangles(triangles);
+		// BufferedImage img = ImageIO.read( new File(".\\res\\img\\card.png") );
  
         for (int[] triangle : triangles) {
+			Graphics2D g2 = (Graphics2D) g;
+
 			Vector3d vertex1 = vertexes.get(triangle[0]-1);
 			Vector3d vertex2 = vertexes.get(triangle[1]-1);
 			Vector3d vertex3 = vertexes.get(triangle[2]-1);
@@ -52,13 +60,28 @@ public class Main extends JFrame {
 			double[] second = vertex2.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 			double[] third = vertex3.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 
-			g.setColor(new Color(rand.nextInt(3)<<6, rand.nextInt(3)<<6, rand.nextInt(3)<<6));
+			g2.setColor(new Color(rand.nextInt(3)<<6, rand.nextInt(3)<<6, rand.nextInt(3)<<6));
+
+			Path2D triShape = new Path2D.Double();
+			triShape.moveTo((int) first[0], (int) first[1]);
+			triShape.lineTo((int) second[0], (int) second[1]);
+			triShape.lineTo((int) third[0], (int) third[1]);
+			triShape.closePath();
+			g2.fill(triShape);
+
+			// BufferedImage strImg = new BufferedImage(img.getWidth(), img.getHeight(), BufferedImage.TYPE_INT_ARGB);
+			// Graphics2D g2d = strImg.createGraphics();
+			// g2d.setClip(triShape);
+			// g2d.drawImage(img, 0, 0, null);
+			// g2d.dispose();
+
 			// g.setColor(Color.BLACK);
-			g.fillPolygon(
-				new int[] {(int) first[0], (int) second[0], (int) third[0]},
-				new int[] {(int) first[1], (int) second[1], (int) third[1]},
-				3
-			);
+			// g.fillPolygon(
+			// 	new int[] {(int) first[0], (int) second[0], (int) third[0]},
+			// 	new int[] {(int) first[1], (int) second[1], (int) third[1]},
+			// 	3
+			// );
+
 
 			// g.setColor(new Color(255, 0, 0));
 			// g.drawLine((int) first[0], (int) first[1], (int) second[0], (int) second[1]);
