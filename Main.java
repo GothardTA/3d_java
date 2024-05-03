@@ -161,9 +161,9 @@ public class Main extends JFrame {
 
 	// private static void rotateAllPoints(double x, double y, double z) {
 	// 	for (Vector3d vertex : vertexes) {
-	// 		vertex.rotateX(x);
-	// 		vertex.rotateY(y);
-	// 		vertex.rotateZ(z);
+	// 		vertex.setRX(x);
+	// 		vertex.setRY(y);
+	// 		vertex.setRZ(z);
 	// 	}
 	// }
 
