@@ -69,29 +69,31 @@ public class Vector3d {
     }
 
     // rotation
-	// private double[] rotateX() {
+	// private double[] rotateX(double angle) {
+    //     double[] newPoint = new double[3];
+
     //     newPoint[0] = x;
-	// 	newPoint[1] = (y * Math.cos(Math.toRadians(rX))) - (z * Math.sin(Math.toRadians(rX)));
-	// 	newPoint[2] = (z * Math.cos(Math.toRadians(rX))) + (y * Math.sin(Math.toRadians(rX)));
+	// 	newPoint[1] = (y * Math.cos(Math.toRadians(angle))) - (z * Math.sin(Math.toRadians(angle)));
+	// 	newPoint[2] = (z * Math.cos(Math.toRadians(angle))) + (y * Math.sin(Math.toRadians(angle)));
 
     //     return newPoint;
 	// }
 
-	// private double[] rotateY() {
+	// private double[] rotateY(double angle) {
     //     double[] newPoint = new double[3];
 
-	// 	newPoint[0] = (x * Math.cos(Math.toRadians(rY))) - (z * Math.sin(Math.toRadians(rY)));
+	// 	newPoint[0] = (x * Math.cos(Math.toRadians(angle))) - (z * Math.sin(Math.toRadians(angle)));
     //     newPoint[1] = y;
-	// 	newPoint[2] = (z * Math.cos(Math.toRadians(rY))) + (x * Math.sin(Math.toRadians(rY)));
+	// 	newPoint[2] = (z * Math.cos(Math.toRadians(angle))) + (x * Math.sin(Math.toRadians(angle)));
 
     //     return newPoint;
 	// }
 
-	// private double[] rotateZ() {
+	// private double[] rotateZ(double angle) {
     //     double[] newPoint = new double[3];
 
-	// 	newPoint[0] = (x * Math.cos(Math.toRadians(rZ))) - (y * Math.sin(Math.toRadians(rZ)));
-	// 	newPoint[1] = (y * Math.cos(Math.toRadians(rZ))) + (x * Math.sin(Math.toRadians(rZ)));
+	// 	newPoint[0] = (x * Math.cos(Math.toRadians(angle))) - (y * Math.sin(Math.toRadians(angle)));
+	// 	newPoint[1] = (y * Math.cos(Math.toRadians(angle))) + (x * Math.sin(Math.toRadians(angle)));
     //     newPoint[2] = z;
 
     //     return newPoint;
