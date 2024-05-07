@@ -20,9 +20,7 @@ public class Main extends JFrame {
 	private static double fov = 60.0;
 	private static double scale = 20.0;
 	private static double mouseSensitivity = 0.7;
-
-	private static ArrayList<Vector3d> vertexes;
-	private static ArrayList<int[]> triangles;
+	private static Object3D stair = new Object3D("./res/objects/cutcube.obj");
 
 	Random rand = new Random();
 
