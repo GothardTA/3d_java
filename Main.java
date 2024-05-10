@@ -11,6 +11,7 @@ public class Main extends JFrame {
 	private static final int HEIGHT = 800;
 
     private static Vector3d cameraPos = new Vector3d(0, 0, -55);
+	private static double[] cameraVelocity = {0.0, 0.0, 0.0};
 	private static double[] cameraAngle = {0.0, 0.0, 0.0};
 	private static double fov = 60.0;
 	private static double scale = 20.0;
@@ -44,6 +45,8 @@ public class Main extends JFrame {
  
     public void paint(Graphics g) {
         super.paint(g);
+
+		objects.get(0).adjustPosition( new Vector3d(0, 1, 0));
 
 		Object3D.sortObjects(objects, cameraPos);
         for (Object3D object : objects) {
