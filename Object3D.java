@@ -97,6 +97,12 @@ public class Object3D {
 		this.position = newPos;
 	}
 
+	public void adjustPosition(Vector3d newPos) {
+		position.setX(position.getX() + newPos.getX());
+		position.setY(position.getY() + newPos.getY());
+		position.setZ(position.getZ() + newPos.getZ());
+	}
+
 	public Vector3d getPosition() {
 		return position;
 	}
