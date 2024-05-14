@@ -69,35 +69,35 @@ public class Vector3d {
     }
 
     // rotation
-	// private double[] rotateX(double angle) {
-    //     double[] newPoint = new double[3];
+	public static void rotateX(Vector3d position, double angle) {
+        Vector3d newPos = new Vector3d(0, 0, 0);
 
-    //     newPoint[0] = x;
-	// 	newPoint[1] = (y * Math.cos(Math.toRadians(angle))) - (z * Math.sin(Math.toRadians(angle)));
-	// 	newPoint[2] = (z * Math.cos(Math.toRadians(angle))) + (y * Math.sin(Math.toRadians(angle)));
+        newPos.setX(position.getX());
+		newPos.setY((position.getY() * Math.cos(Math.toRadians(angle))) - (position.getZ() * Math.sin(Math.toRadians(angle))));
+		newPos.setZ((position.getZ() * Math.cos(Math.toRadians(angle))) + (position.getY() * Math.sin(Math.toRadians(angle))));
 
-    //     return newPoint;
-	// }
+        position = newPos;
+	}
 
-	// private double[] rotateY(double angle) {
-    //     double[] newPoint = new double[3];
+	public static void rotateY(Vector3d position, double angle) {
+        Vector3d newPos = new Vector3d(0, 0, 0);
 
-	// 	newPoint[0] = (x * Math.cos(Math.toRadians(angle))) - (z * Math.sin(Math.toRadians(angle)));
-    //     newPoint[1] = y;
-	// 	newPoint[2] = (z * Math.cos(Math.toRadians(angle))) + (x * Math.sin(Math.toRadians(angle)));
+		position.setX((position.getX() * Math.cos(Math.toRadians(angle))) - (position.getZ() * Math.sin(Math.toRadians(angle))));
+        position.setY(position.getY());
+		position.setZ((position.getZ() * Math.cos(Math.toRadians(angle))) + (position.getX() * Math.sin(Math.toRadians(angle))));
 
-    //     return newPoint;
-	// }
+        position = newPos;
+	}
 
-	// private double[] rotateZ(double angle) {
-    //     double[] newPoint = new double[3];
+	public static void rotateZ(Vector3d position, double angle) {
+        Vector3d newPos = new Vector3d(0, 0, 0);
 
-	// 	newPoint[0] = (x * Math.cos(Math.toRadians(angle))) - (y * Math.sin(Math.toRadians(angle)));
-	// 	newPoint[1] = (y * Math.cos(Math.toRadians(angle))) + (x * Math.sin(Math.toRadians(angle)));
-    //     newPoint[2] = z;
+		newPos.setX((position.getX() * Math.cos(Math.toRadians(angle))) - (position.getY() * Math.sin(Math.toRadians(angle))));
+		newPos.setY((position.getY() * Math.cos(Math.toRadians(angle))) + (position.getX() * Math.sin(Math.toRadians(angle))));
+        newPos.setZ(position.getZ());
 
-    //     return newPoint;
-	// }
+        position = newPos;
+	}
 
     // rotation around a point
     private double[] rotateXAroundPoint(double xt, double yt, double zt, Vector3d point, double angle) {
@@ -145,5 +145,9 @@ public class Vector3d {
         );
 
         return distance;
+    }
+
+    public Vector3d clone() {
+        return new Vector3d(x, y, z);
     }
 }
