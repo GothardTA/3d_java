@@ -26,13 +26,13 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 		super.addMouseMotionListener( new MyMouseListener() );
 	
-		Object3D object = new Object3D("./res/objects/cutcube.obj", new Vector3d(0, 0, 0), new double[]{0.0, 0.0, 0.0}, Color.GREEN, 20.0);
+		Object3D object = new Object3D("./res/objects/cutcube.obj", new Vector3d(0, 0, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
 		objects.add(object);
 
-		object = new Object3D("./res/objects/cube.obj", new Vector3d(-1, 0, 0), new double[]{0.0, 0.0, 0.0}, Color.RED, 20.0);
+		object = new Object3D("./res/objects/cube.obj", new Vector3d(-1, 0, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
 		objects.add(object);
 
-		object = new Object3D("./res/objects/cutcube.obj", new Vector3d(-1, -1, 0), new double[]{0.0, 0.0, 0.0}, Color.BLUE, 20.0);
+		object = new Object3D("./res/objects/cutcube.obj", new Vector3d(-1, -1, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
 		objects.add(object);
 
 		// object = new Object3D("./res/objects/cube.obj", new Vector3d(0, -5, 0), new double[]{0.0, 0.0, 0.0}, Color.YELLOW, 20.0);
