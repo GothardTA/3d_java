@@ -11,14 +11,10 @@ public class Main extends JFrame {
 	private static final int HEIGHT = 800;
 
     private static Vector3d cameraPos = new Vector3d(0, 0, -55);
-	private static double[] cameraVelocity = {0.0, 0.0, 0.0};
 	private static double[] cameraAngle = {0.0, 0.0, 0.0};
 	private static double fov = 60.0;
-	private static double scale = 20.0;
 	private static double mouseSensitivity = 0.7;
 	private static ArrayList<Object3D> objects = new ArrayList<Object3D>();
-
-	Random rand = new Random();
 
  
     public Main() {
@@ -30,23 +26,21 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 		super.addMouseMotionListener( new MyMouseListener() );
 	
-		Object3D object = new Object3D("./res/objects/cutcube.obj", new Vector3d(0, 0, 0), Color.GREEN);
-		object.scaleAll(scale);
+		Object3D object = new Object3D("./res/objects/cutcube.obj", new Vector3d(0, 0, 0), new double[]{0.0, 0.0, 0.0}, Color.GREEN, 20.0);
 		objects.add(object);
 
-		object = new Object3D("./res/objects/cube.obj", new Vector3d(-1, 0, 0), Color.RED);
-		object.scaleAll(scale);
+		object = new Object3D("./res/objects/cube.obj", new Vector3d(-1, 0, 0), new double[]{0.0, 0.0, 0.0}, Color.RED, 20.0);
 		objects.add(object);
 
-		object = new Object3D("./res/objects/cutcube.obj", new Vector3d(-1, -1, 0), Color.BLUE);
-		object.scaleAll(scale);
+		object = new Object3D("./res/objects/cutcube.obj", new Vector3d(-1, -1, 0), new double[]{0.0, 0.0, 0.0}, Color.BLUE, 20.0);
 		objects.add(object);
+
+		// object = new Object3D("./res/objects/cube.obj", new Vector3d(0, -5, 0), new double[]{0.0, 0.0, 0.0}, Color.YELLOW, 20.0);
+		// objects.add(object);
     }
  
     public void paint(Graphics g) {
         super.paint(g);
-
-		objects.get(0).adjustPosition( new Vector3d(0, 1, 0));
 
 		Object3D.sortObjects(objects, cameraPos);
         for (Object3D object : objects) {
@@ -79,28 +73,12 @@ public class Main extends JFrame {
 			if (e.getKeyCode() == KeyEvent.VK_SHIFT) {
 				cameraPos.setY(cameraPos.getY() + 5);
 			}
-			// rotation before mouse could do it
-			// if (e.getKeyCode() == KeyEvent.VK_UP) {
-			// 	rotateAllPoints(5, 0, 0);
-			// }
-			// if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-			// 	rotateAllPoints(-5, 0, 0);
-			// }
-			// if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-			// 	rotateAllPoints(0, -5, 0);
-			// }
-			// if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-			// 	rotateAllPoints(0, 5, 0);
-			// }
-			// if (e.getKeyCode() == KeyEvent.VK_EQUALS) {
-			// 	rotateAllPoints(0, 0, 5);
-			// }
-			// if (e.getKeyCode() == KeyEvent.VK_MINUS) {
-			// 	rotateAllPoints(0, 0, -5);
-			// }
-			// if (e.getKeyCode() == KeyEvent.VK_R) {
-			// 	resetRotateAllPoints();
-			// }
+			if (e.getKeyCode() == KeyEvent.VK_UP) {
+				objects.get(2).adjustPosition( new Vector3d(0.0, 1.0, 0.0) );
+			}
+			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+				objects.get(2).adjustPosition( new Vector3d(0.0, -1.0, 0.0) );
+			}
 
 			repaint();
 		}
@@ -119,6 +97,7 @@ public class Main extends JFrame {
 
 			cameraAngle[0] = (movementY * mouseSensitivity);
 			cameraAngle[1] = (movementX * mouseSensitivity);
+
 			repaint();
 		}
 	
