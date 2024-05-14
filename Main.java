@@ -10,11 +10,12 @@ public class Main extends JFrame {
 	private static final int WIDTH = 800;
 	private static final int HEIGHT = 800;
 
-    private static Vector3d cameraPos = new Vector3d(0, 0, -55);
+    private static Vector3d cameraPos = new Vector3d(0, 0, -40);
 	private static double[] cameraAngle = {0.0, 0.0, 0.0};
 	private static double fov = 60.0;
 	private static double mouseSensitivity = 0.7;
 	private static ArrayList<Object3D> objects = new ArrayList<Object3D>();
+	private static int triangleCount = 0;
 
  
     public Main() {
@@ -26,29 +27,40 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 		super.addMouseMotionListener( new MyMouseListener() );
 	
-		Object3D object = new Object3D("./res/objects/cutcube.obj", new Vector3d(0, 0, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
+		Object3D object = new Object3D("./res/objects/cutcube.obj", new Vector3d(0, -1, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
 		objects.add(object);
 
-		object = new Object3D("./res/objects/cube.obj", new Vector3d(-1, 0, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
+		object = new Object3D("./res/objects/cube.obj", new Vector3d(-1, -1, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
 		objects.add(object);
 
-		object = new Object3D("./res/objects/cutcube.obj", new Vector3d(-1, -1, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
+		object = new Object3D("./res/objects/cutcube.obj", new Vector3d(-1, -2, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
 		objects.add(object);
 
-		// object = new Object3D("./res/objects/cube.obj", new Vector3d(0, -5, 0), new double[]{0.0, 0.0, 0.0}, Color.YELLOW, 20.0);
-		// objects.add(object);
+		for (int x = 0; x < 5; x++) {
+			for (int z = 0; z < 5; z++) {
+				object = new Object3D("./res/objects/cube.obj", new Vector3d(x, 0, z), new double[]{0.0, 0.0, 0.0}, 20.0);
+				objects.add(object);
+			}
+		}
     }
  
     public void paint(Graphics g) {
         super.paint(g);
 
-		Object3D.sortObjects(objects, cameraPos);
-        for (Object3D object : objects) {
-			object.drawToScreen(g, cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
+		ArrayList<Object3D> tmpObjects = new ArrayList<Object3D>();
+		for (Object3D object : objects) {
+			tmpObjects.add(object);
+		}
+
+		Object3D.sortObjects(tmpObjects, cameraPos);
+        for (Object3D object : tmpObjects) {
+			triangleCount += object.drawToScreen(g, cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 		}
 
 		g.setColor(Color.BLACK);
 		g.drawString("(" + cameraPos.getX() + ", " + cameraPos.getY() + ", " + cameraPos.getZ() + ")", 100, 100);
+		g.drawString("Triangles: " + triangleCount, 100, 150);
+		triangleCount = 0;
     }
 
 	class CustomKeyListener implements KeyListener {
