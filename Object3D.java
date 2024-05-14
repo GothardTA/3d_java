@@ -133,7 +133,8 @@ public class Object3D {
 		return rotation;
 	}
 
-	public void drawToScreen(Graphics g, Vector3d cameraPos, double[] cameraAngle, int WIDTH, int HEIGHT, double fov) {
+	public int drawToScreen(Graphics g, Vector3d cameraPos, double[] cameraAngle, int WIDTH, int HEIGHT, double fov) {
+		int triangleCount = 0;
 		ArrayList<Vector3d> tmpVertexes = new ArrayList<Vector3d>();
 
 		for (Vector3d vertex : vertexes) {
@@ -165,10 +166,10 @@ public class Object3D {
 			double[] second = vertex2.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 			double[] third = vertex3.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 
-			double distance1 = vertex1.getDistanceFromPoint( new Vector3d(0, 100, 0) );
-			double distance2 = vertex2.getDistanceFromPoint( new Vector3d(0, 100, 0) );
-			double distance3 = vertex3.getDistanceFromPoint( new Vector3d(0, 100, 0) );
-			int avgDistance = (int) (distance1 + distance2 + distance3) / 2;
+			double distance1 = vertex1.getDistanceFromPoint( new Vector3d(0, -100, 0) );
+			double distance2 = vertex2.getDistanceFromPoint( new Vector3d(0, -100, 0) );
+			double distance3 = vertex3.getDistanceFromPoint( new Vector3d(0, -100, 0) );
+			int avgDistance = (int) (distance1 + distance2 + distance3) / 3;
 
 			if (avgDistance < 0) {
 				avgDistance = 0;
@@ -177,7 +178,7 @@ public class Object3D {
 				avgDistance = 255;
 			}
 
-			g2.setColor( new Color(avgDistance, avgDistance, avgDistance) );
+			g2.setColor( new Color(255 - avgDistance, 255 - avgDistance, 255 - avgDistance, 255) );
 
 			Path2D triShape = new Path2D.Double();
 			triShape.moveTo((int) first[0], (int) first[1]);
@@ -185,18 +186,10 @@ public class Object3D {
 			triShape.lineTo((int) third[0], (int) third[1]);
 			triShape.closePath();
 			g2.fill(triShape);
+
+			triangleCount++;
 		}
 
-		// for (Vector3d vertex : vertexes) {
-		// 	Vector3d.rotateX(vertex, -rotation[0]);
-		// 	Vector3d.rotateY(vertex, -rotation[1]);
-		// 	Vector3d.rotateZ(vertex, -rotation[2]);
-		// }
-
-		// for (Vector3d vertex : vertexes) {
-		// 	vertex.setX(vertex.getX() - position.getX());
-		// 	vertex.setY(vertex.getY() - position.getY());
-		// 	vertex.setZ(vertex.getZ() - position.getZ());
-		// }
+		return triangleCount;
 	}
 }
