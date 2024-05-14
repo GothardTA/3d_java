@@ -6,18 +6,22 @@ public class Object3D {
     private ArrayList<Vector3d> vertexes;
 	private ArrayList<int[]> triangles;
 	private Vector3d position;
+	private double[] rotation;
 	private Color color;
+	private double scale;
 
-    public Object3D(String filename, Vector3d position, Color color) {
+    public Object3D(String filename, Vector3d position, double[] rotation, Color color, double scale) {
         vertexes = ParseOBJ.getVertexesFromFile(filename);
         triangles = ParseOBJ.getTrianglesFromFile(filename);
 		this.position = position;
+		this.rotation = rotation;
 		this.color = color;
+		this.scale = scale;
 
-		for (Vector3d vertex : vertexes) {
-			vertex.setX(vertex.getX() + position.getX());
-			vertex.setY(vertex.getY() + position.getY());
-			vertex.setZ(vertex.getZ() + position.getZ());
+		position.scale(scale);
+
+		for (Vector3d vector : vertexes) {
+			vector.scale(scale);
 		}
     }
 
@@ -87,10 +91,18 @@ public class Object3D {
 		return vertexes.get(triangles.get(0)[0] - 1).getDistanceFromPoint(cameraPos);
 	}
 
-    public void scaleAll(double scale) {
+    public void setScale(double scale) {
+		this.scale = scale;
+
 		for (Vector3d vector : vertexes) {
 			vector.scale(scale);
 		}
+
+		position.scale(scale);
+	}
+
+	public double getScale() {
+		return scale;
 	}
 
 	public void setPosition(Vector3d newPos) {
@@ -98,6 +110,8 @@ public class Object3D {
 	}
 
 	public void adjustPosition(Vector3d newPos) {
+		newPos.scale(scale);
+
 		position.setX(position.getX() + newPos.getX());
 		position.setY(position.getY() + newPos.getY());
 		position.setZ(position.getZ() + newPos.getZ());
@@ -107,21 +121,65 @@ public class Object3D {
 		return position;
 	}
 
+	public void setRotation(double[] rotation) {
+		this.rotation = rotation;
+	}
+
+	public void adjustRotation(double[] newRot) {
+		rotation[0] += newRot[0];
+		rotation[1] += newRot[1];
+		rotation[2] += newRot[2];
+	}
+
+	public double[] getRotation() {
+		return rotation;
+	}
+
 	public void drawToScreen(Graphics g, Vector3d cameraPos, double[] cameraAngle, int WIDTH, int HEIGHT, double fov) {
+		ArrayList<Vector3d> tmpVertexes = new ArrayList<Vector3d>();
+
+		for (Vector3d vertex : vertexes) {
+			tmpVertexes.add(vertex.clone());
+		}
+
+		for (Vector3d vertex : tmpVertexes) {
+			vertex.setX(vertex.getX() + position.getX());
+			vertex.setY(vertex.getY() + position.getY());
+			vertex.setZ(vertex.getZ() + position.getZ());
+		}
+
+		for (Vector3d vertex : tmpVertexes) {
+			Vector3d.rotateX(vertex, rotation[0]);
+			Vector3d.rotateY(vertex, rotation[1]);
+			Vector3d.rotateZ(vertex, rotation[2]);
+		}
+
 		sortTriangles(cameraPos);
  
         for (int[] triangle : triangles) {
 			Graphics2D g2 = (Graphics2D) g;
 
-			Vector3d vertex1 = vertexes.get(triangle[0]-1);
-			Vector3d vertex2 = vertexes.get(triangle[1]-1);
-			Vector3d vertex3 = vertexes.get(triangle[2]-1);
+			Vector3d vertex1 = tmpVertexes.get(triangle[0]-1);
+			Vector3d vertex2 = tmpVertexes.get(triangle[1]-1);
+			Vector3d vertex3 = tmpVertexes.get(triangle[2]-1);
 
 			double[] first = vertex1.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 			double[] second = vertex2.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 			double[] third = vertex3.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 
-			g2.setColor(color);
+			double distance1 = vertex1.getDistanceFromPoint( new Vector3d(0, 100, 0) );
+			double distance2 = vertex2.getDistanceFromPoint( new Vector3d(0, 100, 0) );
+			double distance3 = vertex3.getDistanceFromPoint( new Vector3d(0, 100, 0) );
+			int avgDistance = (int) (distance1 + distance2 + distance3) / 2;
+
+			if (avgDistance < 0) {
+				avgDistance = 0;
+			}
+			if (avgDistance > 255) {
+				avgDistance = 255;
+			}
+
+			g2.setColor( new Color(avgDistance, avgDistance, 0) );
 
 			Path2D triShape = new Path2D.Double();
 			triShape.moveTo((int) first[0], (int) first[1]);
@@ -130,5 +188,17 @@ public class Object3D {
 			triShape.closePath();
 			g2.fill(triShape);
 		}
+
+		// for (Vector3d vertex : vertexes) {
+		// 	Vector3d.rotateX(vertex, -rotation[0]);
+		// 	Vector3d.rotateY(vertex, -rotation[1]);
+		// 	Vector3d.rotateZ(vertex, -rotation[2]);
+		// }
+
+		// for (Vector3d vertex : vertexes) {
+		// 	vertex.setX(vertex.getX() - position.getX());
+		// 	vertex.setY(vertex.getY() - position.getY());
+		// 	vertex.setZ(vertex.getZ() - position.getZ());
+		// }
 	}
 }
