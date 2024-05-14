@@ -7,15 +7,13 @@ public class Object3D {
 	private ArrayList<int[]> triangles;
 	private Vector3d position;
 	private double[] rotation;
-	private Color color;
 	private double scale;
 
-    public Object3D(String filename, Vector3d position, double[] rotation, Color color, double scale) {
+    public Object3D(String filename, Vector3d position, double[] rotation, double scale) {
         vertexes = ParseOBJ.getVertexesFromFile(filename);
         triangles = ParseOBJ.getTrianglesFromFile(filename);
 		this.position = position;
 		this.rotation = rotation;
-		this.color = color;
 		this.scale = scale;
 
 		position.scale(scale);
