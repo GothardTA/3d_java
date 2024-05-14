@@ -177,7 +177,7 @@ public class Object3D {
 				avgDistance = 255;
 			}
 
-			g2.setColor( new Color(avgDistance, avgDistance, 0) );
+			g2.setColor( new Color(avgDistance, avgDistance, avgDistance) );
 
 			Path2D triShape = new Path2D.Double();
 			triShape.moveTo((int) first[0], (int) first[1]);
