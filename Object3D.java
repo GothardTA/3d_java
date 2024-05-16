@@ -18,9 +18,9 @@ public class Object3D {
 
 		position.scale(scale);
 
-		for (Vector3d vector : vertexes) {
-			vector.scale(scale);
-		}
+		// for (Vector3d vector : vertexes) {
+		// 	vector.scale(scale);
+		// }
     }
 
 	public static void sortObjects(ArrayList<Object3D> objects, Vector3d cameraPos) {
@@ -52,6 +52,11 @@ public class Object3D {
 			double distance2 = vertexes.get(tri[1]-1).getDistanceFromPoint(cameraPos);
 			double distance3 = vertexes.get(tri[2]-1).getDistanceFromPoint(cameraPos);
 			double average = (distance1 + distance2 + distance3) / 3;
+
+			// remove triangles to far away, very buggy
+			// if (average > 50) {
+			// 	continue;
+			// }
 
 			if (newTris.size() == 0) {
 				newTris.add(tri);
@@ -92,9 +97,9 @@ public class Object3D {
     public void setScale(double scale) {
 		this.scale = scale;
 
-		for (Vector3d vector : vertexes) {
-			vector.scale(scale);
-		}
+		// for (Vector3d vector : vertexes) {
+		// 	vector.scale(scale);
+		// }
 
 		position.scale(scale);
 	}
@@ -133,6 +138,26 @@ public class Object3D {
 		return rotation;
 	}
 
+	public ArrayList<int[]> getTriangles() {
+		ArrayList<int[]> newTris = new ArrayList<int[]>();
+
+		for (int[] tri : triangles) {
+			newTris.add(tri);
+		}
+
+		return newTris;
+	}
+
+	public ArrayList<Vector3d> getVertexes() {
+		ArrayList<Vector3d> newVertexes = new ArrayList<Vector3d>();
+
+		for (Vector3d edge : vertexes) {
+			newVertexes.add(edge);
+		}
+
+		return newVertexes;
+	}
+
 	public int drawToScreen(Graphics g, Vector3d cameraPos, double[] cameraAngle, int WIDTH, int HEIGHT, double fov) {
 		int triangleCount = 0;
 		ArrayList<Vector3d> tmpVertexes = new ArrayList<Vector3d>();
@@ -141,16 +166,20 @@ public class Object3D {
 			tmpVertexes.add(vertex.clone());
 		}
 
-		for (Vector3d vertex : tmpVertexes) {
-			vertex.setX(vertex.getX() + position.getX());
-			vertex.setY(vertex.getY() + position.getY());
-			vertex.setZ(vertex.getZ() + position.getZ());
+		for (Vector3d vector : tmpVertexes) {
+			vector.scale(scale);
 		}
 
 		for (Vector3d vertex : tmpVertexes) {
 			Vector3d.rotateX(vertex, rotation[0]);
 			Vector3d.rotateY(vertex, rotation[1]);
 			Vector3d.rotateZ(vertex, rotation[2]);
+		}
+
+		for (Vector3d vertex : tmpVertexes) {
+			vertex.setX(vertex.getX() + position.getX());
+			vertex.setY(vertex.getY() + position.getY());
+			vertex.setZ(vertex.getZ() + position.getZ());
 		}
 
 		sortTriangles(cameraPos);
@@ -166,9 +195,9 @@ public class Object3D {
 			double[] second = vertex2.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 			double[] third = vertex3.perspective2D(cameraPos, cameraAngle, WIDTH, HEIGHT, fov);
 
-			double distance1 = vertex1.getDistanceFromPoint( new Vector3d(0, -100, 0) );
-			double distance2 = vertex2.getDistanceFromPoint( new Vector3d(0, -100, 0) );
-			double distance3 = vertex3.getDistanceFromPoint( new Vector3d(0, -100, 0) );
+			double distance1 = vertex1.getDistanceFromPoint( cameraPos ); // new Vector3d(0, -100, 0) );
+			double distance2 = vertex2.getDistanceFromPoint( cameraPos ); // new Vector3d(0, -100, 0) );
+			double distance3 = vertex3.getDistanceFromPoint( cameraPos ); // new Vector3d(0, -100, 0) );
 			int avgDistance = (int) (distance1 + distance2 + distance3) / 3;
 
 			if (avgDistance < 0) {
@@ -177,6 +206,9 @@ public class Object3D {
 			if (avgDistance > 255) {
 				avgDistance = 255;
 			}
+
+			avgDistance = avgDistance >>> 4;
+			avgDistance = avgDistance << 4;
 
 			g2.setColor( new Color(255 - avgDistance, 255 - avgDistance, 255 - avgDistance, 255) );
 

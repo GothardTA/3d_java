@@ -27,18 +27,25 @@ public class Main extends JFrame {
         setLocationRelativeTo(null);
 		super.addMouseMotionListener( new MyMouseListener() );
 	
-		Object3D object = new Object3D("./res/objects/cutcube.obj", new Vector3d(0, -1, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
+		Object3D object = new Object3D("./res/objects/cube.obj", new Vector3d(0, -1, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
 		objects.add(object);
 
-		object = new Object3D("./res/objects/cube.obj", new Vector3d(-1, -1, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
-		objects.add(object);
+		// object = new Object3D("./res/objects/cube.obj", new Vector3d(-1, -1, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
+		// objects.add(object);
 
-		object = new Object3D("./res/objects/cutcube.obj", new Vector3d(-1, -2, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
-		objects.add(object);
+		// object = new Object3D("./res/objects/cutcube.obj", new Vector3d(-1, -2, 0), new double[]{0.0, 0.0, 0.0}, 20.0);
+		// objects.add(object);
 
-		for (int x = 0; x < 5; x++) {
+		for (int y = 0; y < 2; y++) {
 			for (int z = 0; z < 5; z++) {
-				object = new Object3D("./res/objects/cube.obj", new Vector3d(x, 0, z), new double[]{0.0, 0.0, 0.0}, 20.0);
+				object = new Object3D("./res/objects/cube.obj", new Vector3d(-1, y, z), new double[]{0.0, 0.0, 0.0}, 20.0);
+				objects.add(object);
+			}
+		}
+
+		for (int y = 0; y < 2; y++) {
+			for (int z = 0; z < 5; z++) {
+				object = new Object3D("./res/objects/cube.obj", new Vector3d(1, y, z), new double[]{0.0, 0.0, 0.0}, 20.0);
 				objects.add(object);
 			}
 		}
@@ -86,10 +93,10 @@ public class Main extends JFrame {
 				cameraPos.setY(cameraPos.getY() + 5);
 			}
 			if (e.getKeyCode() == KeyEvent.VK_UP) {
-				objects.get(2).adjustPosition( new Vector3d(0.0, 1.0, 0.0) );
+				objects.get(0).adjustRotation( new double[]{0.0, 10.0, 0.0} );
 			}
 			if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-				objects.get(2).adjustPosition( new Vector3d(0.0, -1.0, 0.0) );
+				objects.get(0).adjustRotation( new double[]{0.0, -10.0, 0.0} );
 			}
 
 			repaint();
@@ -125,5 +132,7 @@ public class Main extends JFrame {
                 new Main().setVisible(true);
             }
         });
+
+		System.out.println("Running");
     }
 }
